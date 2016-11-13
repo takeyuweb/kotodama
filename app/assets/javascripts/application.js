@@ -13,4 +13,18 @@
 //= require react
 //= require react_ujs
 //= require turbolinks
-//= require_tree .
+//= require ./cable
+//= require ./components
+//= require_self
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+// for react_component
+window.React = React;
+window.ReactDOM = ReactDOM;
+
+// for material-ui
+let injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+
