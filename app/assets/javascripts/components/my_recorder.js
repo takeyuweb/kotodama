@@ -3,6 +3,7 @@ import Recorder from 'recorderjs';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Toggle from 'material-ui/Toggle';
+import request from '../api_client';
 
 export default class MyRecorder extends ApplicationComponent {
     constructor(props) {
@@ -75,6 +76,13 @@ export default class MyRecorder extends ApplicationComponent {
             this.recorder.exportWAV((blob) => {
                 var url = URL.createObjectURL(blob);
                 console.log(url);
+                var data = new FormData();
+                data.append('message[file]', blob);
+                request.post('/messages', data).then((res) => {
+                    console.log(res);
+                }).catch((err) => {
+                    console.log(err);
+                });
             });
             this.recorder.getBuffer((buffers) => {
                 var newSource = this.audioContext.createBufferSource();

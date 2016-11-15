@@ -24,3 +24,6 @@
 
 /.idea
 /kotodama.iml
+
+# uploads
+public/uploads
