@@ -1,3 +1,6 @@
+//= require_self
+//= require ./components
+
 let React = require("react");
 let ReactDOM = require("react-dom");
 let ReactDOMServer = require("react-dom/server");
