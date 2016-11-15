@@ -8,6 +8,7 @@ export default class RecorderConsole extends ApplicationComponent {
         super(props);
 
         this.state = {
+            initialized: false,
             recording: false
         };
 
@@ -33,6 +34,7 @@ export default class RecorderConsole extends ApplicationComponent {
             var input = this.audioContext.createMediaStreamSource(stream);
             this.recorder = new Recorder(input);
             console.log('Recorder initialised.');
+            this.setState({initialized: true});
         };
         if (navigator.getUserMedia) {
             navigator.getUserMedia({audio: true}, startUserMedia, function (error) {
@@ -99,12 +101,13 @@ export default class RecorderConsole extends ApplicationComponent {
     }
 
     render() {
-        let {recording} = this.state;
+        let {initialized} = this.state;
         return (
             <div style={{maxWidth: 250}}>
                 <Toggle
                     label="Record"
                     onToggle={this.toggleRecording}
+                    disabled={!initialized}
                 />
             </div>
         );
