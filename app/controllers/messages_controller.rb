@@ -6,7 +6,7 @@ class MessagesController < ApplicationController
   def create
     message = Message.new(message_params)
     if message.save
-      head :created, location: message_url(message)
+      render json: message, status: :created
     else
       head :unprocessable_entity
     end

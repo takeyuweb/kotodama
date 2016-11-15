@@ -2,6 +2,7 @@ import ApplicationComponent from './application_component';
 import Recorder from 'recorderjs';
 import Toggle from 'material-ui/Toggle';
 import request from '../api_client';
+import { messageAction } from '../context';
 
 export default class RecorderConsole extends ApplicationComponent {
     constructor(props) {
@@ -80,6 +81,7 @@ export default class RecorderConsole extends ApplicationComponent {
                 data.append('message[file]', blob);
                 request.post('/messages', data).then((res) => {
                     console.log(res);
+                    messageAction.add(res);
                 }).catch((err) => {
                     console.log(err);
                 });
