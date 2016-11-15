@@ -1,3 +1,4 @@
 //= require_self
 
-window.MyRecorder = require('components/my_recorder');
+import MyRecorder from './components/my_recorder';
+window.MyRecorder = MyRecorder;
