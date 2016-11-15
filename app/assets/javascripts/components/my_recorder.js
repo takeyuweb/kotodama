@@ -1,3 +1,4 @@
+import React from 'react';
 import ApplicationComponent from './application_component';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -11,7 +12,7 @@ export default class MyRecorder extends ApplicationComponent {
     }
 
     componentDidMount() {
-        let messages = this.props.messages || [];
+        let messages = this.props.messages;
         messageAction.load(messages);
     }
 
@@ -26,4 +27,9 @@ export default class MyRecorder extends ApplicationComponent {
         );
     }
 }
-
+MyRecorder.propTypes = {
+    messages: React.PropTypes.array.isRequired
+};
+MyRecorder.defaultProps = {
+    messages: []
+};
