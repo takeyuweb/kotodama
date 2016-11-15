@@ -1,3 +1,3 @@
 //= require_self
-//= require_tree ./components
 
+window.MyRecorder = require('components/my_recorder');

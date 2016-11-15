@@ -2,10 +2,9 @@ import ApplicationComponent from './application_component';
 import Recorder from 'recorderjs';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
+import Toggle from 'material-ui/Toggle';
 
-export default class MyRecorder extends ApplicationComponent
-{
+export default class MyRecorder extends ApplicationComponent {
     constructor(props) {
         super(props);
 
@@ -16,7 +15,7 @@ export default class MyRecorder extends ApplicationComponent
         this.audioContext = null;
         this.recorder = null;
 
-        this.bindToSelf( 'startRecording', 'stopRecording' );
+        this.bindToSelf('toggleRecording', 'startRecording', 'stopRecording');
     }
 
     componentDidMount() {
@@ -37,11 +36,24 @@ export default class MyRecorder extends ApplicationComponent
             console.log('Recorder initialised.');
         };
         if (navigator.getUserMedia) {
-            navigator.getUserMedia({audio: true}, startUserMedia, function(error) {
+            navigator.getUserMedia({audio: true}, startUserMedia, function (error) {
                 console.log('No live audio input: ' + error);
             });
         } else {
-            navigator.mediaDevices.getUserMedia({video: false, audio: true}).then(startUserMedia).catch(function (error) {console.log('No live audio input: ' + error);});
+            navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+            }).then(startUserMedia).catch(function (error) {
+                console.log('No live audio input: ' + error);
+            });
+        }
+    }
+
+    toggleRecording(e, isInputChecked) {
+        if (isInputChecked) {
+            this.startRecording();
+        } else {
+            this.stopRecording();
         }
     }
 
@@ -66,12 +78,12 @@ export default class MyRecorder extends ApplicationComponent
             });
             this.recorder.getBuffer((buffers) => {
                 var newSource = this.audioContext.createBufferSource();
-                var newBuffer = this.audioContext.createBuffer( 2, buffers[0].length, this.audioContext.sampleRate );
+                var newBuffer = this.audioContext.createBuffer(2, buffers[0].length, this.audioContext.sampleRate);
                 newBuffer.getChannelData(0).set(buffers[0]);
                 newBuffer.getChannelData(1).set(buffers[1]);
                 newSource.buffer = newBuffer;
 
-                newSource.connect( this.audioContext.destination );
+                newSource.connect(this.audioContext.destination);
                 newSource.start(0);
             });
             this.recorder.clear();
@@ -81,18 +93,14 @@ export default class MyRecorder extends ApplicationComponent
     }
 
     render() {
-        let { recording } = this.state;
+        let {recording} = this.state;
         return (
             <MuiThemeProvider muiTheme={getMuiTheme()}>
-                <div>
-                    <RaisedButton
+                <div style={{maxWidth: 250}}>
+                    <Toggle
                         label="Record"
-                        disabled={recording}
-                        onClick={this.startRecording}/>
-                    <RaisedButton
-                        label="Stop"
-                        disabled={!recording}
-                        onClick={this.stopRecording}/>
+                        onToggle={this.toggleRecording}
+                    />
                 </div>
             </MuiThemeProvider>
         );
