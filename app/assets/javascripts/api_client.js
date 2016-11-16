@@ -1,26 +1,30 @@
 import superagent from 'superagent';
 
-export function get(url, data) {
-    return request('GET', url, data);
+export function get(url, data, options) {
+    return request('GET', url, data, options);
 }
 
-export function post(url, data) {
-    return request('POST', url, data);
+export function post(url, data, options) {
+    return request('POST', url, data, options);
 }
 
-export function put(url, data) {
-    return request('PUT', url, data);
+export function put(url, data, options) {
+    return request('PUT', url, data, options);
 }
 
-export function del(url, data) {
-    return request('DELETE', url, data);
+export function del(url, data, options) {
+    return request('DELETE', url, data, options);
 }
 
-export function request(method, url, data) {
+export function request(method, url, data, options = {}) {
     return new Promise((resolve, reject) => {
         let agent = superagent(method, url)
             .withCredentials()
             .query({ _: new Date().getTime() });
+
+        if (options.binary) {
+            agent.responseType('arraybuffer');
+        }
 
         agent.set("X-CSRF-Token", getCsrfToken());
         if (method == 'GET') {
@@ -35,7 +39,11 @@ export function request(method, url, data) {
                 if (err || 0 == statusCode || 400 <= statusCode) {
                     reject(err);
                 } else {
-                    resolve(res.body);
+                    if (options.binary) {
+                        resolve(res.xhr.response);
+                    } else {
+                        resolve(res.body);
+                    }
                 }
             } else {
                 // ネットワークエラーなど

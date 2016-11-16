@@ -86,16 +86,6 @@ export default class RecorderConsole extends ApplicationComponent {
                     console.log(err);
                 });
             });
-            this.recorder.getBuffer((buffers) => {
-                var newSource = this.audioContext.createBufferSource();
-                var newBuffer = this.audioContext.createBuffer(2, buffers[0].length, this.audioContext.sampleRate);
-                newBuffer.getChannelData(0).set(buffers[0]);
-                newBuffer.getChannelData(1).set(buffers[1]);
-                newSource.buffer = newBuffer;
-
-                newSource.connect(this.audioContext.destination);
-                newSource.start(0);
-            });
             this.recorder.clear();
         }
 

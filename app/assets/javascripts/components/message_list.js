@@ -3,6 +3,7 @@ import { List } from 'material-ui/List';
 import { messageStore } from '../context';
 import { MessageConstants } from '../constants/message_constants';
 import MessageListItem from './message_list_item';
+import request from '../api_client';
 
 export default class MessageList extends ApplicationComponent {
     constructor(props) {
@@ -32,7 +33,19 @@ export default class MessageList extends ApplicationComponent {
     onAdd(message) {
         let { messages } = this.state;
         messages.unshift(message);
-        // TODO: AudioBufferを取得して再生
+        request.get(`/messages/${message.id}.wav`, {}, {binary: true}).then((res) => {
+            var audioData = res;
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            var audioContext = new AudioContext;
+            audioContext.decodeAudioData(audioData).then((decodedData) => {
+                var source = audioContext.createBufferSource();
+                source.buffer = decodedData;
+                source.connect( audioContext.destination );
+                source.start();
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
         this.setState({ messages: messages });
     }
 
