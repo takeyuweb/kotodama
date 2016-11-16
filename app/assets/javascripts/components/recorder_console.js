@@ -1,8 +1,8 @@
 import ApplicationComponent from './application_component';
-import Recorder from 'recorderjs';
 import Toggle from 'material-ui/Toggle';
 import request from '../api_client';
-import { messageAction } from '../context';
+import { messageAction, audioContextStore } from '../context';
+import { AudioContextConstants } from '../constants/audio_context_constants';
 
 export default class RecorderConsole extends ApplicationComponent {
     constructor(props) {
@@ -16,39 +16,18 @@ export default class RecorderConsole extends ApplicationComponent {
         this.audioContext = null;
         this.recorder = null;
 
-        this.bindToSelf('toggleRecording', 'startRecording', 'stopRecording');
+        this.bindToSelf('getRecorder', 'toggleRecording', 'startRecording', 'stopRecording');
     }
 
     componentDidMount() {
-        try {
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-            window.URL = window.URL || window.webkitURL;
+        audioContextStore.subscribe(
+            AudioContextConstants.RECORDER_OPENED,
+            this.getRecorder);
+    }
 
-            this.audioContext = new AudioContext;
-        } catch (e) {
-            console.log('No web audio support in this browser!');
-            return;
-        }
-
-        let startUserMedia = (stream) => {
-            var input = this.audioContext.createMediaStreamSource(stream);
-            this.recorder = new Recorder(input);
-            console.log('Recorder initialised.');
-            this.setState({initialized: true});
-        };
-        if (navigator.getUserMedia) {
-            navigator.getUserMedia({audio: true}, startUserMedia, function (error) {
-                console.log('No live audio input: ' + error);
-            });
-        } else {
-            navigator.mediaDevices.getUserMedia({
-                video: false,
-                audio: true
-            }).then(startUserMedia).catch(function (error) {
-                console.log('No live audio input: ' + error);
-            });
-        }
+    getRecorder(recorder) {
+        this.recorder = recorder;
+        this.setState({initialized: true});
     }
 
     toggleRecording(e, isInputChecked) {

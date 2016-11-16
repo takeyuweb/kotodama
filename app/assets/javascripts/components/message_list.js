@@ -1,7 +1,8 @@
 import ApplicationComponent from './application_component';
 import { List } from 'material-ui/List';
-import { messageStore } from '../context';
+import { messageStore, audioContextStore } from '../context';
 import { MessageConstants } from '../constants/message_constants';
+import { AudioContextConstants } from '../constants/audio_context_constants';
 import MessageListItem from './message_list_item';
 import request from '../api_client';
 
@@ -11,6 +12,8 @@ export default class MessageList extends ApplicationComponent {
         this.state = {
             messages: []
         };
+        this.audioContext = null;
+        this.bindToSelf('getAudioContext');
     }
 
     componentDidMount() {
@@ -21,6 +24,14 @@ export default class MessageList extends ApplicationComponent {
         messageStore.subscribe(
             MessageConstants.ADD,
             this.onAdd.bind(this));
+
+        audioContextStore.subscribe(
+            AudioContextConstants.INITIALIZED,
+            this.getAudioContext);
+    }
+
+    getAudioContext(audioContext) {
+        this.audioContext = audioContext;
     }
 
     onLoad(newMessages) {
@@ -35,12 +46,10 @@ export default class MessageList extends ApplicationComponent {
         messages.unshift(message);
         request.get(`/messages/${message.id}.wav`, {}, {binary: true}).then((res) => {
             var audioData = res;
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            var audioContext = new AudioContext;
-            audioContext.decodeAudioData(audioData).then((decodedData) => {
-                var source = audioContext.createBufferSource();
+            this.audioContext.decodeAudioData(audioData).then((decodedData) => {
+                var source = this.audioContext.createBufferSource();
                 source.buffer = decodedData;
-                source.connect( audioContext.destination );
+                source.connect( this.audioContext.destination );
                 source.start();
             });
         }).catch((err) => {
