@@ -19,7 +19,8 @@
     "react-dom": "^15.3.2",
     "react-tap-event-plugin": "^1.0.0",
     "recorderjs": "https://github.com/mattdiamond/Recorderjs.git",
-    "superagent": "^2.3.0"
+    "superagent": "^2.3.0",
+    "turbolinks": "^5.0.0"
   },
   "devDependencies": {},
   "scripts": {

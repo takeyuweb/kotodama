@@ -10,15 +10,14 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require react
+//= require_self
 //= require react_ujs
-//= require turbolinks
 //= require ./cable
 //= require ./components
-//= require_self
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Turbolinks from 'turbolinks';
 
 // for react_component
 window.React = React;
@@ -28,3 +27,4 @@ window.ReactDOM = ReactDOM;
 let injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
+Turbolinks.start();

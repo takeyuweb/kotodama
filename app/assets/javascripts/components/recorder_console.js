@@ -1,7 +1,7 @@
+import React from 'react';
 import ApplicationComponent from './application_component';
 import Toggle from 'material-ui/Toggle';
-import request from '../api_client';
-import { messageAction, audioContextStore } from '../context';
+import { audioContextStore } from '../context';
 import { AudioContextConstants } from '../constants/audio_context_constants';
 
 export default class RecorderConsole extends ApplicationComponent {
@@ -54,16 +54,9 @@ export default class RecorderConsole extends ApplicationComponent {
         if (this.recorder) {
             this.recorder.stop();
             this.recorder.exportWAV((blob) => {
-                var url = URL.createObjectURL(blob);
-                console.log(url);
-                var data = new FormData();
-                data.append('message[file]', blob);
-                request.post('/messages', data).then((res) => {
-                    console.log(res);
-                    messageAction.add(res);
-                }).catch((err) => {
-                    console.log(err);
-                });
+                if (this.props.onRecorded) {
+                    this.props.onRecorded(blob);
+                }
             });
             this.recorder.clear();
         }
@@ -84,4 +77,10 @@ export default class RecorderConsole extends ApplicationComponent {
         );
     }
 }
+RecorderConsole.propTypes = {
+    onRecorded: React.PropTypes.func.isRequired
+};
+RecorderConsole.defaultProps = {
+    onRecorded: null
+};
 

@@ -16,7 +16,7 @@ export default class MessageListItem extends ApplicationComponent {
         let { message } = this.props;
         return (
             <ListItem
-                primaryText={`${message.id}.wav`}
+                primaryText={`message/${message.id}.wav`}
                 secondaryText={message.created_at}
                 onClick={this.onClick}>
             </ListItem>
