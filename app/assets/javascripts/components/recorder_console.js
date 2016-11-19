@@ -25,6 +25,12 @@ export default class RecorderConsole extends ApplicationComponent {
             this.getRecorder);
     }
 
+    componentWillUnmount() {
+        audioContextStore.dispose(
+            AudioContextConstants.RECORDER_OPENED,
+            this.getRecorder);
+    }
+
     getRecorder(recorder) {
         this.recorder = recorder;
         this.setState({initialized: true});

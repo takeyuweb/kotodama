@@ -13,19 +13,33 @@ export default class EchoList extends ApplicationComponent {
             echos: []
         };
         this.audioContext = null;
-        this.bindToSelf('getAudioContext');
+        this.bindToSelf('onLoad', 'onAdd', 'getAudioContext');
     }
 
     componentDidMount() {
         echoStore.subscribe(
             EchoConstants.LOAD,
-            this.onLoad.bind(this));
+            this.onLoad);
 
         echoStore.subscribe(
             EchoConstants.ADD,
-            this.onAdd.bind(this));
+            this.onAdd);
 
         audioContextStore.subscribe(
+            AudioContextConstants.INITIALIZED,
+            this.getAudioContext);
+    }
+
+    componentWillUnmount() {
+        echoStore.dispose(
+            EchoConstants.LOAD,
+            this.onLoad);
+
+        echoStore.dispose(
+            EchoConstants.ADD,
+            this.onAdd);
+
+        audioContextStore.dispose(
             AudioContextConstants.INITIALIZED,
             this.getAudioContext);
     }

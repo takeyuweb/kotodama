@@ -13,22 +13,37 @@ export default class MessageList extends ApplicationComponent {
             messages: []
         };
         this.audioContext = null;
-        this.bindToSelf('getAudioContext');
+        this.bindToSelf('onLoad', 'onAdd', 'getAudioContext');
     }
 
     componentDidMount() {
         messageStore.subscribe(
             MessageConstants.LOAD,
-            this.onLoad.bind(this));
+            this.onLoad);
 
         messageStore.subscribe(
             MessageConstants.ADD,
-            this.onAdd.bind(this));
+            this.onAdd);
 
         audioContextStore.subscribe(
             AudioContextConstants.INITIALIZED,
             this.getAudioContext);
     }
+
+    componentWillUnmount() {
+        messageStore.dispose(
+            MessageConstants.LOAD,
+            this.onLoad);
+
+        messageStore.dispose(
+            MessageConstants.ADD,
+            this.onAdd);
+
+        audioContextStore.dispose(
+            AudioContextConstants.INITIALIZED,
+            this.getAudioContext);
+    }
+
 
     getAudioContext(audioContext) {
         this.audioContext = audioContext;

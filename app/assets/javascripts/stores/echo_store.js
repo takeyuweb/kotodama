@@ -12,6 +12,10 @@ export default class EchoStore extends EventEmitter {
         this.on(actionType, callback);
     }
 
+    dispose(actionType, callback) {
+        this.removeListener(actionType, callback);
+    }
+
     onAction(action) {
         switch(action.actionType) {
             case EchoConstants.LOAD:

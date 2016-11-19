@@ -13,6 +13,10 @@ export default class AudioContextStore extends EventEmitter {
         this.on(actionType, callback);
     }
 
+    dispose(actionType, callback) {
+        this.removeListener(actionType, callback);
+    }
+
     onAction(action) {
         switch(action.actionType) {
             case AudioContextConstants.INITIALIZED:
